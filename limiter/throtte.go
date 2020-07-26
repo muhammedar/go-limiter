@@ -29,23 +29,3 @@ func BuildLimiter(reqPerSec, buffer int) (c chan time.Time) {
 
 	return c
 }
-
-// // RateLimit middleware limits the throughput to h using TickerLimiter
-// // configured with the provided rps and burst.
-// func RateLimit(rps, burst int, mockData int) {
-
-// 	// a channel of type limiter, constructed with rps, bursts
-// 	limiter := BuildLimiter(rps, burst)
-
-// 	mockRequests := make(chan int, mockData)
-// 	for i := 1; i <= mockData; i++ {
-// 		mockRequests <- i
-// 	}
-// 	close(mockRequests)
-
-// 	for req := range mockRequests {
-// 		<-limiter //publish to the broker
-// 		fmt.Println("request", req, time.Now())
-// 	}
-
-// }
