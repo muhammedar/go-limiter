@@ -1,3 +1,3 @@
-module github.com/muhammedGabriel
+module github.com/muhammedar/go-limiter
 
 go 1.13
