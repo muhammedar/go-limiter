@@ -4,13 +4,21 @@ import (
 	"time"
 )
 
-// BuildLimiter is responsible for building a channel whcich will be used to store and pass the rquests
-func BuildLimiter(reqPerSec, buffer int) (c chan time.Time) {
+//Limiter is the body of the limiter object
+type Limiter struct {
+	//ID of the limiter
+	ID string
+	// Channel is the channel that manages the request limiting
+	Channel chan time.Time
+}
 
+// BuildLimiter is responsible for building a channel which will be used to store and pass the requests
+func (l *Limiter) BuildLimiter(id string, reqPerSec, bufferSize int) (limiter *Limiter) {
+	limiter.ID = id
 	// building a the buffer using go-channels, and initializing it with time.now
-	c = make(chan time.Time, buffer)
-	for i := 0; i < buffer; i++ {
-		c <- time.Now()
+	limiter.Channel = make(chan time.Time, bufferSize)
+	for i := 0; i < bufferSize; i++ {
+		limiter.Channel <- time.Now()
 	}
 
 	// ticker will help organizing the time accourding to the needed requests per seconds
@@ -20,12 +28,24 @@ func BuildLimiter(reqPerSec, buffer int) (c chan time.Time) {
 	go func() {
 		for t := range t.C {
 			select {
-			case c <- t: // add the tick to channel
+			case limiter.Channel <- t: // add the tick to channel
 			default: // default will be executed when the channel is already full
 			}
 		}
-		close(c) // close channel when the ticker is stopped
+		close(limiter.Channel) // close channel when the ticker is stopped
 	}()
 
-	return c
+	return limiter
+}
+
+//GetLimiter gets a limiter from a map of limiters
+func (l *Limiter) GetLimiter(limiters map[string]*Limiter, id string) (limiter *Limiter, res bool) {
+	limiter, exists := limiters[id]
+
+	if !exists {
+		res = false
+		return nil, res
+	}
+
+	return limiter, true
 }
