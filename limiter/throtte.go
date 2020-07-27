@@ -4,24 +4,8 @@ import (
 	"time"
 )
 
-//Limiter is the body of the limiter object
-type Limiter struct {
-	//ID of the limiter
-	ID string
-	// Channel is the channel that manages the request limiting
-	Channel chan time.Time
-}
-
-//NewLimiterObject creats a new limiter object
-func NewLimiterObject(id string) *Limiter {
-	return &Limiter{
-		ID:      id,
-		Channel: make(chan time.Time),
-	}
-}
-
 // BuildChannel is responsible for building a channel which will be used to store and pass the requests
-func (l *Limiter) BuildChannel(reqPerSec, bufferSize int) (c chan time.Time) {
+func BuildChannel(reqPerSec, bufferSize int) (c chan time.Time) {
 	// building a the buffer using go-channels, and initializing it with time.now
 	c = make(chan time.Time, bufferSize)
 	for i := 0; i < bufferSize; i++ {
