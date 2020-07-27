@@ -46,7 +46,7 @@ func (l *Limiter) BuildChannel(reqPerSec, bufferSize int) (c chan time.Time) {
 }
 
 //GetLimiter gets a limiter from a map of limiters
-func GetLimiter(limiters map[string]*Limiter, id string) (limiter *Limiter, res bool) {
+func GetLimiter(limiters map[string]chan time.Time, id string) (limiter chan time.Time, res bool) {
 	limiter, exists := limiters[id]
 
 	if !exists {
