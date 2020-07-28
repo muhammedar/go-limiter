@@ -10,7 +10,7 @@ type Limiter struct {
 }
 
 // BuildChannel is responsible for building a channel which will be used to store and pass the requests
-func BuildChannel(reqPerSec, bufferSize int) (c chan time.Time) {
+func BuildChannel(reqPerSec time.Duration, bufferSize int) (c chan time.Time) {
 	// building a the buffer using go-channels, and initializing it with time.now
 	c = make(chan time.Time, bufferSize)
 	for i := 0; i < bufferSize; i++ {
@@ -18,7 +18,7 @@ func BuildChannel(reqPerSec, bufferSize int) (c chan time.Time) {
 	}
 
 	// ticker will help organizing the time accourding to the needed requests per seconds
-	t := time.NewTicker(time.Second / time.Duration(reqPerSec))
+	t := time.NewTicker(time.Second * reqPerSec)
 
 	// add to channel on each tick
 	go func() {
@@ -47,7 +47,7 @@ func GetLimiter(limiters map[string]chan time.Time, id string) (limiter chan tim
 }
 
 //NewLimiter constructs a new limiter object
-func NewLimiter(reqPerSec, bufferSize int) *Limiter {
+func NewLimiter(reqPerSec time.Duration, bufferSize int) *Limiter {
 	return &Limiter{
 		Channel: BuildChannel(reqPerSec, bufferSize),
 	}
