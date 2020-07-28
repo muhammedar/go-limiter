@@ -4,6 +4,11 @@ import (
 	"time"
 )
 
+//Limiter is the rate limiter Object
+type Limiter struct {
+	Channel chan time.Time
+}
+
 // BuildChannel is responsible for building a channel which will be used to store and pass the requests
 func BuildChannel(reqPerSec, bufferSize int) (c chan time.Time) {
 	// building a the buffer using go-channels, and initializing it with time.now
@@ -39,4 +44,11 @@ func GetLimiter(limiters map[string]chan time.Time, id string) (limiter chan tim
 	}
 
 	return limiter, true
+}
+
+//NewLimiter constructs a new limiter object
+func NewLimiter(reqPerSec, bufferSize int) *Limiter {
+	return &Limiter{
+		Channel: BuildChannel(reqPerSec, bufferSize),
+	}
 }
