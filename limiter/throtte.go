@@ -1,11 +1,11 @@
-package limiter
+package main
 
 import (
 	"time"
 )
 
-//Limiter is the rate limiter Object
-type Limiter struct {
+//Throttler is the rate limiter Object
+type Throttler struct {
 	Channel chan time.Time
 }
 
@@ -47,8 +47,8 @@ func GetLimiter(limiters map[string]chan time.Time, id string) (limiter chan tim
 }
 
 //NewLimiter constructs a new limiter object
-func NewLimiter(reqPerSec time.Duration, bufferSize int) *Limiter {
-	return &Limiter{
+func NewLimiter(reqPerSec time.Duration, bufferSize int) *Throttler {
+	return &Throttler{
 		Channel: BuildChannel(reqPerSec, bufferSize),
 	}
 }
