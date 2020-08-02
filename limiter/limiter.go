@@ -61,7 +61,7 @@ func main() {
 
 func (l *LimitWindow) checkSize() bool {
 	if len(l.Queue) == l.ReqPerSec {
-		log.Println("Queue is full, can't handle more")
+		log.Println("Queue is full, can't handle more, about to decide how much time to wait...")
 
 		return true
 	}
@@ -84,7 +84,7 @@ func (l *LimitWindow) calculateSleepTime() (t time.Duration) {
 	ans := x.Sub(y)
 	log.Printf("%v ||| %v ------> %v", x, y, ans)
 	if ans < time.Second {
-		log.Printf("%v ||| %v ------> %v", x, y, ans)
+		log.Printf("%v", ans)
 		t = time.Second
 		return t
 	}

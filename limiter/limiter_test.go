@@ -65,3 +65,25 @@ func TestNewLimitWindow_3(t *testing.T) {
 	log.Println(time.Since(started))
 	assert.True(t, time.Since(started) > time.Second*2)
 }
+
+func TestNewLimitWindow_4(t *testing.T) {
+	lw := NewLimitWindow(3)
+	started := time.Now()
+
+	st := lw.Check()
+	log.Printf("going to sleep: %v", st)
+	st = lw.Check()
+	log.Printf("going to sleep: %v", st)
+	st = lw.Check()
+	log.Printf("going to sleep: %v", st)
+	time.Sleep(time.Second)
+	st = lw.Check()
+	log.Printf("going to sleep: %v", st)
+	st = lw.Check()
+	log.Printf("going to sleep: %v", st)
+	st = lw.Check()
+	log.Printf("going to sleep: %v", st)
+
+	log.Println(time.Since(started))
+	assert.True(t, time.Since(started) > time.Second*2)
+}
