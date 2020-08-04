@@ -51,13 +51,6 @@ func (l *LimitWindow) Check() time.Duration {
 	return 0
 }
 
-func main() {
-	l := NewLimitWindow(5)
-	for i := 0; i < 100; i++ {
-		l.Check()
-	}
-}
-
 func (l *LimitWindow) checkSize() bool {
 	if len(l.Queue) == l.ReqPerSec {
 		log.Println("Queue is full, can't handle more, about to decide how much time to wait...")
