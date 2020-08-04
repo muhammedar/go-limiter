@@ -45,7 +45,6 @@ func (l *LimitWindow) Check() time.Duration {
 	} else {
 		l.remove()
 		l.push(m)
-		l.calculateSleepTime()
 		sleepTime := l.calculateSleepTime()
 		return sleepTime
 	}

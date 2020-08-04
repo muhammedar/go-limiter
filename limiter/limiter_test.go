@@ -10,22 +10,27 @@ import (
 )
 
 func TestNewLimitWindow(t *testing.T) {
-	lw := NewLimitWindow(10)
+	lw := NewLimitWindow(2)
 	started := time.Now()
 	var waitGroup sync.WaitGroup
-	waitGroup.Add(6)
-	for i := 0; i < 6; i++ {
+	waitGroup.Add(5)
+	for i := 0; i < 5; i++ {
 		go func() {
 			defer waitGroup.Done()
-			for j := 0; j < 10; j++ {
-				time.Sleep(1)
+			for i := 0; i < 2; i++ {
 				st := lw.Check()
-				dur := time.Second * time.Duration(st)
+				dur := time.Duration(st)
+				{
+					mutex.Lock()
+					time.Sleep(dur)
+					mutex.Unlock()
+				}
 				log.Printf("going to sleep: %v", dur)
 			}
 		}()
 	}
 	waitGroup.Wait()
+	log.Println(time.Since(started))
 	assert.True(t, time.Since(started) > time.Second*4)
 }
 
@@ -37,19 +42,12 @@ func TestNewLimitWindow_1(t *testing.T) {
 		log.Printf("going to sleep: %v", dur)
 		time.Sleep(dur)
 	}
-	assert.True(t, time.Since(started) < time.Second*3)
-
-	// time.Sleep(time.Second)
-	// st := lw.Check()
-	// dur := time.Second * time.Duration(st)
-	// log.Printf("going to sleep: %v", dur)
-	// time.Sleep(dur)
-
+	assert.True(t, time.Since(started) > time.Second*3)
 	log.Println(time.Since(started))
 }
 
 func TestNewLimitWindow_3(t *testing.T) {
-	lw := NewLimitWindow(3)
+	lw := NewLimitWindow(10)
 	started := time.Now()
 	var waitGroup sync.WaitGroup
 	waitGroup.Add(15)
@@ -58,12 +56,16 @@ func TestNewLimitWindow_3(t *testing.T) {
 			defer waitGroup.Done()
 			st := lw.Check()
 			log.Printf("going to sleep: %v", st)
-			time.Sleep(st)
+			{
+				mutex.Lock()
+				time.Sleep(st)
+				mutex.Unlock()
+			}
 		}()
 	}
 	waitGroup.Wait()
 	log.Println(time.Since(started))
-	assert.True(t, time.Since(started) > time.Second*2)
+	assert.True(t, time.Since(started) >= time.Second)
 }
 
 func TestNewLimitWindow_4(t *testing.T) {
@@ -72,18 +74,48 @@ func TestNewLimitWindow_4(t *testing.T) {
 
 	st := lw.Check()
 	log.Printf("going to sleep: %v", st)
+	time.Sleep(st)
 	st = lw.Check()
 	log.Printf("going to sleep: %v", st)
+	time.Sleep(st)
 	st = lw.Check()
 	log.Printf("going to sleep: %v", st)
+	time.Sleep(st)
 	time.Sleep(time.Second)
 	st = lw.Check()
 	log.Printf("going to sleep: %v", st)
+	time.Sleep(st)
 	st = lw.Check()
 	log.Printf("going to sleep: %v", st)
+	time.Sleep(st)
 	st = lw.Check()
 	log.Printf("going to sleep: %v", st)
+	time.Sleep(st)
+	st = lw.Check()
+	log.Printf("going to sleep: %v", st)
+	time.Sleep(st)
+	st = lw.Check()
+	log.Printf("going to sleep: %v", st)
+	time.Sleep(st)
+	st = lw.Check()
+	log.Printf("going to sleep: %v", st)
+	time.Sleep(st)
+	st = lw.Check()
+	log.Printf("going to sleep: %v", st)
+	time.Sleep(st)
+	st = lw.Check()
+	log.Printf("going to sleep: %v", st)
+	time.Sleep(st)
+	st = lw.Check()
+	log.Printf("going to sleep: %v", st)
+	time.Sleep(st)
+	st = lw.Check()
+	log.Printf("going to sleep: %v", st)
+	time.Sleep(st)
+	st = lw.Check()
+	log.Printf("going to sleep: %v", st)
+	time.Sleep(st)
 
 	log.Println(time.Since(started))
-	assert.True(t, time.Since(started) > time.Second*2)
+	assert.True(t, time.Since(started) >= time.Second*4)
 }
