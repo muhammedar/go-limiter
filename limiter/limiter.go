@@ -74,7 +74,6 @@ func (l *LimitWindow) calculateSleepTime() (t time.Duration) {
 	x := l.Queue[len(l.Queue)-1].Time
 	y := l.Queue[0].Time
 	ans := x.Sub(y)
-	log.Printf("%v ||| %v ------> %v", x, y, ans)
 	if ans < time.Second {
 		log.Printf("%v", ans)
 		t = time.Second
