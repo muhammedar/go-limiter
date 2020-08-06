@@ -26,14 +26,6 @@ func NewMessage() *Message {
 	}
 }
 
-//NewLimitWindow build the Queue which will hold the messeges
-func NewLimitWindow(reqPerSec int) *LimitWindow {
-	return &LimitWindow{
-		ReqPerSec: reqPerSec,
-		Queue:     make([]*Message, 0, reqPerSec),
-	}
-}
-
 //checkSize checks if the window (queue) is full
 func (l *LimitWindow) checkSize() bool {
 	if len(l.Queue) == l.ReqPerSec {
