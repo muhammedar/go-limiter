@@ -10,7 +10,7 @@ func NewLimitWindow(reqPerSec int) *LimitWindow {
 	}
 }
 
-//Check is main (use time.Duration)
+//Check is used to check the queue and decide the time needed to sleep (use time.Duration)
 func (l *LimitWindow) Check() time.Duration {
 	mutex.Lock()
 	defer mutex.Unlock()
