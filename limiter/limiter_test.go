@@ -1,6 +1,7 @@
 package limiter
 
 import (
+	"fmt"
 	"log"
 	"sync"
 	"testing"
@@ -118,4 +119,16 @@ func TestNewLimitWindow_4(t *testing.T) {
 
 	log.Println(time.Since(started))
 	assert.True(t, time.Since(started) >= time.Second*4)
+}
+
+func TestNewLimitWindow_6(t *testing.T) {
+	start := time.Now()
+	count := 150
+	lw := NewLimitWindow(5)
+	for i := 0; i < count; i++ {
+		lw.CheckWithSleep()
+	}
+	total := time.Since(start)
+	fmt.Printf("total: %v messages in %v  (rate: %v)\n", count, total, float64(count)/total.Seconds())
+
 }

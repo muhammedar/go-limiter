@@ -26,3 +26,19 @@ func (l *LimitWindow) Check() time.Duration {
 	}
 	return 0
 }
+
+//CheckWithSleep is used to check the queue and decide the time needed to sleep (use time.Duration)
+func (l *LimitWindow) CheckWithSleep() {
+	mutex.Lock()
+	defer mutex.Unlock()
+	m := NewMessage()
+	full := l.checkSize()
+	if !full {
+		l.push(m)
+	} else {
+		l.remove()
+		l.push(m)
+		sleepTime := l.calculateSleepTime()
+		time.Sleep(sleepTime)
+	}
+}
