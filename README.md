@@ -17,7 +17,9 @@ Check in your code the amount of time the app needes to sleep using the  ```Chec
 ```
 func (l *LimitWindow) Check() time.Duration
 ```
-```Check()``` performs some calculation on the queue that is used to store the request, to make sure that the number of   ```Requests Per Seconds``` didn't exceed the limit
+```Check()``` is a non-blocking function performs some calculation on the queue that is used to store the request, to make sure that the number of   ```Requests Per Seconds``` didn't exceed the limit, and returns the sleep time.
+
+```CheckWithSleep()``` is a blocking function performs some calculation on the queue that is used to store the request, to make sure that the number of   ```Requests Per Seconds``` didn't exceed the limit, and sleeps the calulcated amount of  time.
 
 ## Authors
 

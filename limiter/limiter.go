@@ -6,15 +6,16 @@ import "time"
 func NewLimitWindow(reqPerSec int) *LimitWindow {
 	return &LimitWindow{
 		ReqPerSec: reqPerSec,
-		Queue:     make([]*Message, 0, reqPerSec),
+		Queue:     make([]time.Time, 0, reqPerSec),
+		Debug:     false,
 	}
 }
 
 //Check is used to check the queue and decide the time needed to sleep (use time.Duration)
 func (l *LimitWindow) Check() time.Duration {
-	mutex.Lock()
-	defer mutex.Unlock()
-	m := NewMessage()
+	l.Mutex.Lock()
+	defer l.Mutex.Unlock()
+	m := time.Now()
 	full := l.checkSize()
 	if !full {
 		l.push(m)
@@ -29,9 +30,9 @@ func (l *LimitWindow) Check() time.Duration {
 
 //CheckWithSleep is used to check the queue and decide the time needed to sleep (use time.Duration)
 func (l *LimitWindow) CheckWithSleep() {
-	mutex.Lock()
-	defer mutex.Unlock()
-	m := NewMessage()
+	l.Mutex.Lock()
+	defer l.Mutex.Unlock()
+	m := time.Now()
 	full := l.checkSize()
 	if !full {
 		l.push(m)

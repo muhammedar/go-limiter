@@ -6,54 +6,47 @@ import (
 	"time"
 )
 
-var mutex sync.Mutex
-
-//Message represents a message request
-type Message struct {
-	Time time.Time
-}
-
 //LimitWindow is the Queue that holds the message object
 type LimitWindow struct {
 	ReqPerSec int
-	Queue     []*Message
+	Queue     []time.Time
+	Mutex     sync.Mutex
+	Debug     bool //default is false, set to true to see logs
 }
 
-//NewMessage creates a new message object
-func NewMessage() *Message {
-	return &Message{
-		Time: time.Now(),
+func (l *LimitWindow) debugLogs(msg string, a ...interface{}) {
+	if l.Debug {
+		log.Printf(msg, a...)
 	}
 }
 
 //checkSize checks if the window (queue) is full
 func (l *LimitWindow) checkSize() bool {
 	if len(l.Queue) == l.ReqPerSec {
-		log.Println("Queue is full, can't handle more, about to decide how much time to wait...")
-
+		l.debugLogs("Rate Limiter: Queue is full")
 		return true
 	}
 	return false
 }
 
 //push appends to the queue
-func (l *LimitWindow) push(m *Message) {
+func (l *LimitWindow) push(m time.Time) {
 	l.Queue = append(l.Queue, m)
 	var txt string
 	for _, m := range l.Queue {
-		txt += m.Time.Format(time.StampMilli) + ", "
+		txt += m.Format(time.StampMilli) + ", "
 	}
-	log.Printf("[%v]", txt)
+	l.debugLogs("[%v]", txt)
 }
 
 //calaculates the amout of sleep time needed
 func (l *LimitWindow) calculateSleepTime() (t time.Duration) {
 	//here i need to sleep and remove the first element
-	x := l.Queue[len(l.Queue)-1].Time
-	y := l.Queue[0].Time
+	x := l.Queue[len(l.Queue)-1]
+	y := l.Queue[0]
 	ans := x.Sub(y)
 	if ans < time.Second {
-		log.Printf("%v", ans)
+		l.debugLogs("%v", ans)
 		t = time.Second - ans
 		return t
 	}

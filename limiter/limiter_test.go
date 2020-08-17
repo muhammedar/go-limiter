@@ -12,6 +12,7 @@ import (
 
 func TestNewLimitWindow(t *testing.T) {
 	lw := NewLimitWindow(2)
+	lw.Debug = false
 	started := time.Now()
 	var waitGroup sync.WaitGroup
 	waitGroup.Add(5)
@@ -22,9 +23,9 @@ func TestNewLimitWindow(t *testing.T) {
 				st := lw.Check()
 				dur := time.Duration(st)
 				{
-					mutex.Lock()
+					lw.Mutex.Lock()
 					time.Sleep(dur)
-					mutex.Unlock()
+					lw.Mutex.Unlock()
 				}
 				log.Printf("going to sleep: %v", dur)
 			}
@@ -58,9 +59,9 @@ func TestNewLimitWindow_3(t *testing.T) {
 			st := lw.Check()
 			log.Printf("going to sleep: %v", st)
 			{
-				mutex.Lock()
+				lw.Mutex.Lock()
 				time.Sleep(st)
-				mutex.Unlock()
+				lw.Mutex.Unlock()
 			}
 		}()
 	}
@@ -71,6 +72,7 @@ func TestNewLimitWindow_3(t *testing.T) {
 
 func TestNewLimitWindow_4(t *testing.T) {
 	lw := NewLimitWindow(3)
+	lw.Debug = true
 	started := time.Now()
 
 	st := lw.Check()
