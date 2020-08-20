@@ -3,6 +3,15 @@ Go limiter, is used to limit the number of calles on an endpoint, based on a the
 
 ## Overview
 The case of busy loop on a certin resource or endpoint, should be handled, in this package this is done by letting the user define the number of hits per seconds on an end point, and then the code starts monitoring the resorce, and decide if there is a need to sleep for amount of time.
+### Files
+This package contains:
+
+```limiter.go``` ==> the main function for rate limiting.
+
+```implementation.go``` ==> the code used to implement the main functinos.
+
+```limiter_test.go``` ==> unittesting for the main functions.
+
 ### Usage
 
 Create an object of the limiter using the following constructor,
